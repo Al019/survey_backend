@@ -14,7 +14,7 @@ class Survey extends Model
     protected $table = "surveys";
 
     protected $fillable = [
-        'user_id',
+        'admin_id',
         'uuid',
         'title',
         'description',
@@ -22,7 +22,12 @@ class Survey extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function response(): HasMany
+    {
+        return $this->hasMany(Response::class, 'survey_id');
     }
 
     public function question(): HasMany

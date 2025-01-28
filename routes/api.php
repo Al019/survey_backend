@@ -22,7 +22,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/create-survey', [SurveyController::class, 'createSurvey']);
-    Route::get('/get-form', [SurveyController::class, 'getForm']);
-    Route::post('/edit-form', [SurveyController::class, 'editForm']);
+    Route::get('/get-header', [SurveyController::class, 'getHeader']);
+    Route::post('/edit-header', [SurveyController::class, 'editHeader']);
+    Route::get('/get-question', [SurveyController::class, 'getQuestion']);
+    Route::post('/add-question', [SurveyController::class, 'addQuestion']);
+    Route::post('/edit-question', [SurveyController::class, 'editQuestion']);
+    Route::post('/delete-question', [SurveyController::class, 'deleteQuestion']);
+    Route::post('/delete-option', [SurveyController::class, 'deleteOption']);
 
 });

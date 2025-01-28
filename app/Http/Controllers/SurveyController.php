@@ -15,22 +15,10 @@ class SurveyController extends Controller
         $user_id = auth()->user()->id;
 
         $survey = Survey::create([
-            "user_id" => $user_id,
+            "admin_id" => $user_id,
             "uuid" => $request->uuid,
             "title" => "Untitled form",
             "description" => "Form description",
-        ]);
-
-        $question = Question::create([
-            "survey_id" => $survey->id,
-            "text" => "Question",
-            "type" => "multiple_choice",
-            "required" => 0,
-        ]);
-
-        Option::create([
-            "question_id" => $question->id,
-            "text" => "Option 1",
         ]);
 
         return response()->json([
@@ -38,44 +26,93 @@ class SurveyController extends Controller
         ]);
     }
 
-    public function getForm(Request $request)
-    {
-        $form = Survey::with('question.option')
-            ->where('uuid', $request->uuid)
-            ->first();
-
-        return response()->json($form);
-    }
-
-    public function editForm(Request $request)
+    public function getHeader(Request $request)
     {
         $user_id = auth()->user()->id;
 
-        $survey = Survey::where('user_id', $user_id)
+        $header = Survey::where('admin_id', $user_id)
             ->where('uuid', $request->uuid)
             ->first();
 
-        $survey->update([
-            'title' => $request->title ?? $survey->title,
-            'description' => $request->description ?? $survey->description,
+        return response()->json($header);
+    }
+
+    public function editHeader(Request $request)
+    {
+        $user_id = auth()->user()->id;
+
+        Survey::where('admin_id', $user_id)
+            ->where('uuid', $request->uuid)
+            ->update([
+                'title' => $request->title ?? 'Untitled form',
+                'description' => $request->description ?? 'Form description',
+            ]);
+    }
+
+    public function getQuestion(Request $request)
+    {
+        $user_id = auth()->user()->id;
+
+        $survey = Survey::where('admin_id', $user_id)
+            ->where('uuid', $request->uuid)
+            ->first();
+
+        $questions = Question::with('option')
+            ->where('survey_id', $survey->id)
+            ->get();
+
+        return response()->json($questions);
+    }
+
+    public function addQuestion(Request $request)
+    {
+        $user_id = auth()->user()->id;
+
+        $survey = Survey::where('admin_id', $user_id)
+            ->first();
+
+        $question = Question::create([
+            'survey_id' => $survey->id,
+            'text' => $request->text,
+            'type' => $request->type,
+            'required' => $request->required,
         ]);
 
-        foreach ($request['question'] as $questionData) {
-            $question = Question::updateOrCreate(
-                ['id' => $questionData['id'], 'survey_id' => $survey->id],
-                [
-                    'text' => $questionData['text'] ?? 'Question',
-                    'type' => $questionData['type'] ?? 'multiple_choice',
-                    'required' => $questionData['required'] ?? 0,
-                ]
-            );
-
-            foreach ($questionData['option'] as $optionData) {
-                Option::updateOrCreate(
-                    ['id' => $optionData['id'], 'question_id' => $question->id],
-                    ['text' => $optionData['text'] ?? 'Option']
-                );
-            }
+        foreach ($request->option as $option) {
+            Option::create([
+                'question_id' => $question->id,
+                'text' => $option['text'],
+            ]);
         }
     }
+
+    public function editQuestion(Request $request)
+    {
+        $user_id = auth()->user()->id;
+
+        $survey = Survey::where('admin_id', $user_id)
+            ->first();
+
+        Question::where('id', $request->id)
+            ->where('survey_id', $survey->id)
+            ->update([
+                'text' => $request->text ?? 'Question',
+                'type' => $request->type,
+                'required' => $request->required,
+            ]);
+    }
+
+    public function deleteQuestion(Request $request)
+    {
+        Question::where('id', $request->question_id)
+            ->delete();
+    }
+
+    public function deleteOption(Request $request)
+    {
+        Option::where('id', $request->option_id)
+            ->where('question_id', $request->question_id)
+            ->delete();
+    }
+
 }
