@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('admin_id')->constrained('users');
             $table->string('uuid');
             $table->string('title');
-            $table->longText('description')->nullable();
+            $table->longText('description');
+            $table->string('status')->default('draft');
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
     }

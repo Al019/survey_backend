@@ -18,6 +18,8 @@ class Survey extends Model
         'uuid',
         'title',
         'description',
+        'status',
+        'published_at',
     ];
 
     public function user(): BelongsTo

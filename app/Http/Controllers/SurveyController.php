@@ -69,6 +69,7 @@ class SurveyController extends Controller
         $user_id = auth()->user()->id;
 
         $survey = Survey::where('admin_id', $user_id)
+            ->where('uuid', $request->uuid)
             ->first();
 
         $question = Question::create([
@@ -91,28 +92,78 @@ class SurveyController extends Controller
         $user_id = auth()->user()->id;
 
         $survey = Survey::where('admin_id', $user_id)
+            ->where('uuid', $request->uuid)
             ->first();
 
-        Question::where('id', $request->id)
+        Question::where('id', $request->question['id'])
             ->where('survey_id', $survey->id)
             ->update([
-                'text' => $request->text ?? 'Question',
-                'type' => $request->type,
-                'required' => $request->required,
+                'text' => $request->question['text'] ?? 'Untitled question',
+                'type' => $request->question['type'],
+                'required' => $request->question['required'],
             ]);
+
+        if ($request->question['type'] === 'text') {
+            Option::where('question_id', $request->question['id'])->delete();
+
+            Option::create([
+                'question_id' => $request->question['id'],
+                'text' => 'Text',
+            ]);
+        } elseif (in_array($request->question['type'], ['multiple_choice', 'checkboxes', 'dropdown'])) {
+            Option::where('question_id', $request->question['id'])->delete();
+
+            Option::create([
+                'question_id' => $request->question['id'],
+                'text' => 'Question option',
+            ]);
+        }
     }
 
     public function deleteQuestion(Request $request)
     {
-        Question::where('id', $request->question_id)
+        Question::where('id', $request->id)
+            ->where('survey_id', $request->survey_id)
             ->delete();
+    }
+
+    public function addOption(Request $request)
+    {
+        Option::create([
+            'question_id' => $request->question_id,
+            'text' => $request->option['text'],
+        ]);
+    }
+
+    public function editOption(Request $request)
+    {
+        Option::where('id', $request->id)
+            ->where('question_id', $request->question_id)
+            ->update([
+                'text' => $request->text
+            ]);
     }
 
     public function deleteOption(Request $request)
     {
-        Option::where('id', $request->option_id)
+        Option::where('id', $request->id)
             ->where('question_id', $request->question_id)
             ->delete();
     }
 
+    public function getSurvey()
+    {
+        $surveys = Survey::get();
+
+        return response()->json($surveys);
+    }
+
+    public function publishSurvey(Request $request)
+    {
+        Survey::where('uuid', $request->uuid)
+            ->update([
+                'status' => 'publish',
+                'published_at' => now()
+            ]);
+    }
 }
