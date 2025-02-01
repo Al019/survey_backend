@@ -16,7 +16,7 @@ class Response extends Model
     protected $fillable = [
         'survey_id',
         'enumerator_id',
-        'submitted_at',
+        'answer',
     ];
 
     public function user(): BelongsTo
@@ -27,10 +27,5 @@ class Response extends Model
     public function survey(): BelongsTo
     {
         return $this->belongsTo(Survey::class, 'survey_id');
-    }
-
-    public function answer(): HasMany
-    {
-        return $this->hasMany(Answer::class,'response_id');
     }
 }
