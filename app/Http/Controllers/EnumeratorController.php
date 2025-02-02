@@ -48,39 +48,17 @@ class EnumeratorController extends Controller
 
     public function getSurvey()
     {
-        $surveys = Survey::where('status', 'publish')
-            ->get();
+        $surveys = Survey::latest()->get();
 
         return response()->json($surveys);
     }
 
     public function getSurveyQuestionnaire(Request $request)
     {
-        $header = Survey::where('uuid', $request->uuid)
-            ->first();
-
-        $questions = Question::with('option')
-            ->where('survey_id', $header->id)
-            ->get();
-
-        return response()->json([
-            'header' => $header,
-            'questions' => $questions
-        ]);
-    }
-
-    public function submitSurvey(Request $request)
-    {
-        $user_id = auth()->user()->id;
-
         $survey = Survey::where('uuid', $request->uuid)
+            ->with('question.option')
             ->first();
 
-        $response = Response::firstOrCreate(
-            [
-                'survey_id' => $survey->id,
-                'enumerator_id' => $user_id
-            ]
-        );
+        return response()->json($survey);
     }
 }
