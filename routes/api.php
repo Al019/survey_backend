@@ -24,10 +24,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/survey/create-survey', [SurveyController::class, 'createSurvey']);
     Route::get('/survey/get-survey', [SurveyController::class, 'getSurvey']);
+    Route::get('/survey/get-survey-uestionnaire', [SurveyController::class, 'getSurveyQuestionnaire']);
+    Route::get('/survey/get-response', [SurveyController::class, 'getResponse']);
 
     Route::post('/enumerator/add-enumerator', [EnumeratorController::class, 'addEnumerator']);
     Route::get('/enumerator/get-enumerator', [EnumeratorController::class, 'getEnumerator']);
     Route::get('/enumerator/get-survey', [EnumeratorController::class, 'getSurvey']);
-    Route::get('/enumerator/get-survey-uestionnaire', [EnumeratorController::class, 'getSurveyQuestionnaire']);
+    Route::post('/enumerator/submit-survey', [EnumeratorController::class, 'submitSurvey']);
+    Route::get('/enumerator/get-response', [EnumeratorController::class, 'getResponse']);
 
 });

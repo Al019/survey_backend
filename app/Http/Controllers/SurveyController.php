@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Option;
 use App\Models\Question;
+use App\Models\Response;
 use App\Models\Survey;
 use App\Models\Type;
 use Illuminate\Http\Request;
@@ -43,5 +44,26 @@ class SurveyController extends Controller
         $surveys = Survey::latest()->get();
 
         return response()->json($surveys);
+    }
+
+    public function getSurveyQuestionnaire(Request $request)
+    {
+        $survey = Survey::where('uuid', $request->uuid)
+            ->with('question.option')
+            ->first();
+
+        return response()->json($survey);
+    }
+
+    public function getResponse(Request $request)
+    {
+        $survey = Survey::where('uuid', $request->uuid)
+            ->first();
+
+        $response = Response::where('survey_id', $survey->id)
+            ->with('answer.answer_option')
+            ->get();
+
+        return response()->json($response);
     }
 }
