@@ -20,6 +20,7 @@ class SurveyController extends Controller
             "uuid" => $request->uuid,
             "title" => $request->survey["title"] ?? "Untitled form",
             "description" => $request->survey["description"],
+            "limit" => $request->survey["limit"],
         ]);
 
         foreach ($request->survey["questions"] as $questionData) {
@@ -41,7 +42,9 @@ class SurveyController extends Controller
 
     public function getSurvey()
     {
-        $surveys = Survey::latest()->get();
+        $surveys = Survey::withCount('response')
+            ->latest()
+            ->get();
 
         return response()->json($surveys);
     }
@@ -49,6 +52,7 @@ class SurveyController extends Controller
     public function getSurveyQuestionnaire(Request $request)
     {
         $survey = Survey::where('uuid', $request->uuid)
+            ->withCount('response')
             ->with('question.option')
             ->first();
 

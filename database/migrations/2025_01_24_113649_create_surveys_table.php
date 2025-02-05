@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('uuid');
             $table->string('title');
             $table->longText('description')->nullable();
+            $table->string('limit')->nullable();
             $table->timestamps();
         });
     }

@@ -47,13 +47,6 @@ class EnumeratorController extends Controller
         return response()->json($enumerators);
     }
 
-    public function getSurvey()
-    {
-        $surveys = Survey::latest()->get();
-
-        return response()->json($surveys);
-    }
-
     public function submitSurvey(Request $request)
     {
         $user_id = auth()->user()->id;
