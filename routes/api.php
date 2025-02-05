@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/survey/create-survey', [SurveyController::class, 'createSurvey']);
     Route::get('/survey/get-survey', [SurveyController::class, 'getSurvey']);
-    Route::get('/survey/get-survey-uestionnaire', [SurveyController::class, 'getSurveyQuestionnaire']);
+    Route::get('/survey/get-survey-questionnaire', [SurveyController::class, 'getSurveyQuestionnaire']);
     Route::get('/survey/get-response', [SurveyController::class, 'getResponse']);
 
     Route::post('/enumerator/add-enumerator', [EnumeratorController::class, 'addEnumerator']);

@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'password' => null,
             'remember_token' => Str::random(10),
             'role' => null,
+            'status' => null,
         ];
     }
 
