@@ -26,7 +26,7 @@ class EnumeratorController extends Controller
         ]);
 
         // $password = Str::random(8);
-        $password = "password";
+        $password = "P@ssw0rd";
 
         User::create([
             "last_name" => $request->last_name,
@@ -73,6 +73,14 @@ class EnumeratorController extends Controller
 
         $survey = Survey::where('uuid', $request->uuid)
             ->first();
+
+        $surveyLimit = $survey->limit !== null ? (int) $survey->limit : null;
+
+        $responseCount = Response::where('survey_id', $survey->id)->count();
+
+        if ($surveyLimit !== null && $responseCount === $surveyLimit) {
+            return response()->noContent();
+        }
 
         $reponse = Response::create([
             'survey_id' => $survey->id,
