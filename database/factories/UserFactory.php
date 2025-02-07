@@ -20,6 +20,8 @@ class UserFactory extends Factory
         return [
             'last_name' => null,
             'first_name' => null,
+            'middle_name' => null,
+            'gender' => null,
             'email' => null,
             'email_verified_at' => now(),
             'password' => null,

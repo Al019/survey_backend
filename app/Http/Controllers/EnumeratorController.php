@@ -21,6 +21,7 @@ class EnumeratorController extends Controller
         $request->validate([
             'last_name' => ['required'],
             'first_name' => ['required'],
+            'gender' => ['required'],
             'email' => ['required', 'email', 'unique:users'],
         ]);
 
@@ -31,6 +32,7 @@ class EnumeratorController extends Controller
             "last_name" => $request->last_name,
             "first_name" => $request->first_name,
             "middle_name" => $request->middle_name,
+            "gender" => $request->gender,
             "email" => $request->email,
             'password' => Hash::make($password),
             "role" => "enumerator",
@@ -45,6 +47,24 @@ class EnumeratorController extends Controller
             ->get();
 
         return response()->json($enumerators);
+    }
+
+    public function updateEnumeratorStatus(Request $request)
+    {
+        User::where('id', $request->enumerator_id)
+            ->where('role', 'enumerator')
+            ->update([
+                'status' => $request->status
+            ]);
+    }
+
+    public function getEnumeratorInfo(Request $request)
+    {
+        $information = User::where('id', $request->enumerator_id)
+            ->where('role', 'enumerator')
+            ->first();
+
+        return response()->json($information);
     }
 
     public function submitSurvey(Request $request)

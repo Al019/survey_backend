@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/enumerator/add-enumerator', [EnumeratorController::class, 'addEnumerator']);
     Route::get('/enumerator/get-enumerator', [EnumeratorController::class, 'getEnumerator']);
+    Route::get('/enumerator/get-enumerator-information', [EnumeratorController::class, 'getEnumeratorInfo']);
+    Route::post('/enumerator/update-enumerator-status', [EnumeratorController::class, 'updateEnumeratorStatus']);
     Route::post('/enumerator/submit-survey', [EnumeratorController::class, 'submitSurvey']);
     Route::get('/enumerator/get-response', [EnumeratorController::class, 'getResponse']);
 
