@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EnumeratorController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Http\Request;
@@ -22,16 +23,19 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::post('/survey/create-survey', [SurveyController::class, 'createSurvey']);
-    Route::get('/survey/get-survey', [SurveyController::class, 'getSurvey']);
-    Route::get('/survey/get-survey-questionnaire', [SurveyController::class, 'getSurveyQuestionnaire']);
-    Route::get('/survey/get-response', [SurveyController::class, 'getResponse']);
+    Route::post('/admin/add-enumerator', [AdminController::class, 'addEnumerator']);
+    Route::get('/admin/get-enumerator', [AdminController::class, 'getEnumerator']);
+    Route::get('/admin/get-enumerator-information', [AdminController::class, 'getEnumeratorInformation']);
+    Route::post('/admin/update-enumerator-status', [AdminController::class, 'updateEnumeratorStatus']);
+    Route::post('/admin/create-survey', [AdminController::class, 'createSurvey']);
+    Route::get('/admin/get-survey', [AdminController::class, 'getSurvey']);
+    Route::get('/admin/get-survey-questionnaire', [AdminController::class, 'getSurveyQuestionnaire']);
+    Route::get('/admin/get-survey-response', [AdminController::class, 'getSurveyResponse']);
+    Route::get('/admin/get-assign-enumerator', [AdminController::class, 'getAssignEnumerator']);
+    Route::get('/admin/get-assign-enumerator-survey', [AdminController::class, 'getAssignEnumeratorSurvey']);
 
-    Route::post('/enumerator/add-enumerator', [EnumeratorController::class, 'addEnumerator']);
-    Route::get('/enumerator/get-enumerator', [EnumeratorController::class, 'getEnumerator']);
-    Route::get('/enumerator/get-enumerator-information', [EnumeratorController::class, 'getEnumeratorInfo']);
-    Route::post('/enumerator/update-enumerator-status', [EnumeratorController::class, 'updateEnumeratorStatus']);
+    Route::get('/enumerator/get-survey', [EnumeratorController::class, 'getSurvey']);
     Route::post('/enumerator/submit-survey', [EnumeratorController::class, 'submitSurvey']);
-    Route::get('/enumerator/get-response', [EnumeratorController::class, 'getResponse']);
+    Route::get('/enumerator/get-survey-response', [EnumeratorController::class, 'getSurveyResponse']);
 
 });

@@ -30,6 +30,7 @@ class User extends Authenticatable
         'password',
         'role',
         'status',
+        'is_default',
     ];
 
     /**
@@ -61,5 +62,10 @@ class User extends Authenticatable
     public function response(): HasMany
     {
         return $this->hasMany(Response::class, 'enumerator_id');
+    }
+
+    public function survey_assignment(): HasMany
+    {
+        return $this->hasMany(SurveyAssignment::class, 'enumerator_id');
     }
 }

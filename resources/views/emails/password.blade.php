@@ -19,7 +19,7 @@
 
   body {
     padding: 16px;
-    background: rgb(227 242 253 / 0.5);
+    background: rgb(200 230 201 / 0.3);
     height: 100vh;
   }
 

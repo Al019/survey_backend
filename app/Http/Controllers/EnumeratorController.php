@@ -16,55 +16,18 @@ use Str;
 
 class EnumeratorController extends Controller
 {
-    public function addEnumerator(Request $request)
+    public function getSurvey()
     {
-        $request->validate([
-            'last_name' => ['required'],
-            'first_name' => ['required'],
-            'gender' => ['required'],
-            'email' => ['required', 'email', 'unique:users'],
-        ]);
+        $user_id = auth()->user()->id;
 
-        // $password = Str::random(8);
-        $password = "P@ssw0rd";
-
-        User::create([
-            "last_name" => $request->last_name,
-            "first_name" => $request->first_name,
-            "middle_name" => $request->middle_name,
-            "gender" => $request->gender,
-            "email" => $request->email,
-            'password' => Hash::make($password),
-            "role" => "enumerator",
-        ]);
-
-        // Mail::to($request->email)->send(new PasswordMail($password));
-    }
-
-    public function getEnumerator(Request $request)
-    {
-        $enumerators = User::where("role", "enumerator")
+        $surveys = Survey::whereHas('survey_assignment', function ($query) use ($user_id) {
+            $query->where('enumerator_id', $user_id);
+        })
+            ->withCount('response')
+            ->latest()
             ->get();
 
-        return response()->json($enumerators);
-    }
-
-    public function updateEnumeratorStatus(Request $request)
-    {
-        User::where('id', $request->enumerator_id)
-            ->where('role', 'enumerator')
-            ->update([
-                'status' => $request->status
-            ]);
-    }
-
-    public function getEnumeratorInfo(Request $request)
-    {
-        $information = User::where('id', $request->enumerator_id)
-            ->where('role', 'enumerator')
-            ->first();
-
-        return response()->json($information);
+        return response()->json($surveys);
     }
 
     public function submitSurvey(Request $request)
@@ -103,7 +66,7 @@ class EnumeratorController extends Controller
         }
     }
 
-    public function getResponse(Request $request)
+    public function getSurveyResponse(Request $request)
     {
         $user_id = auth()->user()->id;
 
