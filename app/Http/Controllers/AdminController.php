@@ -7,6 +7,7 @@ use App\Models\Option;
 use App\Models\Question;
 use App\Models\Response;
 use App\Models\Survey;
+use App\Models\SurveyAssignment;
 use App\Models\User;
 use Hash;
 use Illuminate\Http\Request;
@@ -127,9 +128,12 @@ class AdminController extends Controller
 
     public function getAssignEnumerator(Request $request)
     {
+        $survey_id = Survey::where('uuid', $request->uuid)
+            ->first()->id;
+
         $enumerators = User::where('role', 'enumerator')
-            ->whereDoesntHave('survey_assignment', function ($query) use ($request) {
-                $query->where('survey_id', $request->survey_id);
+            ->whereDoesntHave('survey_assignment', function ($query) use ($survey_id) {
+                $query->where('survey_id', $survey_id);
             })
             ->get();
 
@@ -138,13 +142,16 @@ class AdminController extends Controller
 
     public function getAssignEnumeratorSurvey(Request $request)
     {
+        $survey_id = Survey::where('uuid', $request->uuid)
+            ->first()->id;
+
         $enumerators = User::where('role', 'enumerator')
-            ->whereHas('survey_assignment', function ($query) use ($request) {
-                $query->where('survey_id', $request->survey_id);
+            ->whereHas('survey_assignment', function ($query) use ($survey_id) {
+                $query->where('survey_id', $survey_id);
             })
             ->withCount([
-                'response' => function ($query) use ($request) {
-                    $query->where('survey_id', $request->survey_id);
+                'response' => function ($query) use ($survey_id) {
+                    $query->where('survey_id', $survey_id);
                 }
             ])
             ->get();
@@ -152,5 +159,11 @@ class AdminController extends Controller
         return response()->json($enumerators);
     }
 
-
+    public function assignEnumerator(Request $request)
+    {
+        SurveyAssignment::create([
+            'survey_id' => $request->survey_id,
+            'enumerator_id' => $request->enumerator_id,
+        ]);
+    }
 }

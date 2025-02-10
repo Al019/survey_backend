@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EnumeratorController;
-use App\Http\Controllers\SurveyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/get-survey-response', [AdminController::class, 'getSurveyResponse']);
     Route::get('/admin/get-assign-enumerator', [AdminController::class, 'getAssignEnumerator']);
     Route::get('/admin/get-assign-enumerator-survey', [AdminController::class, 'getAssignEnumeratorSurvey']);
+    Route::post('/admin/assign-enumerator', [AdminController::class, 'assignEnumerator']);
 
     Route::get('/enumerator/get-survey', [EnumeratorController::class, 'getSurvey']);
     Route::post('/enumerator/submit-survey', [EnumeratorController::class, 'submitSurvey']);
